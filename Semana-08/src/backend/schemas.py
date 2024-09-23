@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 import datetime
 
 # Configuração da conexão com o PostgreSQL
-DATABASE_URL = "postgresql://gustavomachado:243677@127.0.0.1/rndr_token_predict"
+DATABASE_URL = "postgresql://gustavomachado:zX9@pQ1#nW4&gK8%@127.0.0.1/rndr_token_predict"
 engine = create_engine(DATABASE_URL, pool_pre_ping=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()

@@ -1,12 +1,43 @@
-version: '3.1'
-
 services:
-  db:
+  postgres:
     image: postgres
     restart: always
     environment:
       POSTGRES_USER: gustavomachado
-      POSTGRES_PASSWORD: 243677
+      POSTGRES_PASSWORD: newpassword
       POSTGRES_DB: rndr_token_predict
     ports:
       - "5434:5432"
+    networks:
+      - app-tier
+
+  frontend:
+    build: ./frontend
+    image: src/frontend
+    restart: unless-stopped
+    ports:
+      - "8501:8501"
+    depends_on:
+      - backend
+    container_name: frontend
+    networks:
+      - app-tier
+
+  backend:
+    build: ./backend
+    image: src/backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: "postgresql://gustavomachado:newpassword@postgres:5432/rndr_token_predict"
+      TF_ENABLE_ONEDNN_OPTS: 0
+    ports:
+      - "5433:5432"
+    depends_on:
+      - postgres
+    container_name: backend
+    networks:
+      - app-tier
+
+networks:
+  app-tier:
+    driver: bridge
