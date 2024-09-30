@@ -1,7 +1,7 @@
 from sklearn.metrics import mean_absolute_error, mean_squared_error
+import numpy as np
 
 def evaluate_model(model, X_test, y_test):
-    # Faz previsões nos dados de teste
     predictions = model.predict(X_test)
 
     # Calcula métricas de avaliação

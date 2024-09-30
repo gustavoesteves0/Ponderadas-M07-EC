@@ -18,7 +18,7 @@ def train_model(request: TrainRequest):
     try:
         model_manager.train(start_date, end_date)
         # Ideally save the trained model to a file
-        model_manager.save(f"../models/render_token_weekly_brl.pkl")
+        model_manager.save("/src/models/crypto_model.pkl")
         return {"message": f"Modelo treinado para Render de {start_date} até {end_date}."}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro ao treinar o modelo: {e}")
@@ -30,7 +30,7 @@ def predict(request: PredictRequest):
 
     try:
         # Load the trained model before prediction
-        model_manager.load(f"../models/{crypto}_model.pkl")
+        model_manager.load(f"/src/models/crypto_model.pkl")
         prediction = model_manager.predict(crypto)
         # Log the API usage
         log_usage(crypto)

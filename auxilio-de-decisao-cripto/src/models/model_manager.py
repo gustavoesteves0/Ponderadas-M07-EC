@@ -3,6 +3,8 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Dropout, Input
 from tensorflow.keras.models import load_model
 from models.evaluate import evaluate_model
+from models.storage import save_model
+import os
 
 class ModelManager:
     def __init__(self, model_name="crypto_model.pkl"):
@@ -34,19 +36,27 @@ class ModelManager:
 
         # Compile model
         model.compile(optimizer='adam', loss='mean_squared_error')
-
         # Train model
         model.fit(X_train, y_train, epochs=20, batch_size=32, verbose=1)
 
+
+        model_path = os.getenv('MODEL_PATH', "/app/src/models/crypto_model.pkl")
+
+
+        # Save the trained model
+        save_model(model, model_path)
+
         return model  # Return the trained model
     
-    def predict_price(self, features):
-        # Load the model if not in memory
-        if self.model is None:
-            self.load_model()
+    def predict_price(model, X_test, scaler):
+        # Fazer previsões com o modelo treinado
+        predictions = model.predict(X_test)
         
-        # Make prediction
-        return self.model.predict(features)
+        # Reverter a normalização dos preços previstos
+        predictions = scaler.inverse_transform(predictions)
+        
+        return predictions
+
     
     def evaluate(self, X_test, y_test):
         # Avalia o modelo

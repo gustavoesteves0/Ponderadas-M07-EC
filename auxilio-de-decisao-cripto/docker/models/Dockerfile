@@ -1,23 +1,25 @@
-# Use an official Python image as the base
+# Use an official Python runtime as a parent image
 FROM python:3.9-slim
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1
 
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy the requirements file for models
+# Copy requirements file into the container
 COPY ../../src/models/requirements.txt .
 
-# Install the required Python packages for model training and evaluation
+# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the entire app source code into the container
-COPY . .
+# Copy the rest of the application code into the container
+COPY . /app/
 
-# Set the entrypoint to the /src/models directory
-WORKDIR /app/src/models
-
-# Expose any necessary ports (if applicable)
+# Expose any ports that need to be accessible (adjust as necessary)
 # EXPOSE 8000
 
-# Define the default command to be run (can be overwritten later)
-CMD ["python", "train.py"]
+# Define the entry point or command to run your models
+# This can be adjusted based on how you want to use your models (e.g., for training, API server, etc.)
+CMD ["python", "main.py"]

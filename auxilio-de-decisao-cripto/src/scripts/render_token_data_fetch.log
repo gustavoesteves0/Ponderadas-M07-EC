@@ -819,3 +819,111 @@
 2024-09-29 22:23:35,751 - INFO - Fetching data for RNDRUSDT from 2024-09-27 to 2024-09-29
 2024-09-29 22:23:36,161 - WARNING - No data returned for RNDRUSDT from 2024-09-27 to 2024-09-29
 2024-09-29 22:23:36,217 - INFO - Data successfully saved to ../../data/raw/crypto_prices/render_token_weekly_brl.csv
+2024-09-30 14:30:22,779 - INFO - Fetched USDTBRL rate: 5.472
+2024-09-30 14:30:22,780 - INFO - Fetching data for RNDRUSDT from 2023-09-29 to 2023-10-06
+2024-09-30 14:30:23,081 - INFO - Fetched 169 records for this interval.
+2024-09-30 14:30:23,081 - INFO - Fetching data for RNDRUSDT from 2023-10-06 to 2023-10-13
+2024-09-30 14:30:23,392 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:23,392 - INFO - Fetching data for RNDRUSDT from 2023-10-13 to 2023-10-20
+2024-09-30 14:30:23,717 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:23,717 - INFO - Fetching data for RNDRUSDT from 2023-10-20 to 2023-10-27
+2024-09-30 14:30:24,057 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:24,057 - INFO - Fetching data for RNDRUSDT from 2023-10-27 to 2023-11-03
+2024-09-30 14:30:24,402 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:24,403 - INFO - Fetching data for RNDRUSDT from 2023-11-03 to 2023-11-10
+2024-09-30 14:30:24,743 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:24,743 - INFO - Fetching data for RNDRUSDT from 2023-11-10 to 2023-11-17
+2024-09-30 14:30:25,087 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:25,087 - INFO - Fetching data for RNDRUSDT from 2023-11-17 to 2023-11-24
+2024-09-30 14:30:25,435 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:25,435 - INFO - Fetching data for RNDRUSDT from 2023-11-24 to 2023-12-01
+2024-09-30 14:30:25,777 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:25,777 - INFO - Fetching data for RNDRUSDT from 2023-12-01 to 2023-12-08
+2024-09-30 14:30:26,120 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:26,120 - INFO - Fetching data for RNDRUSDT from 2023-12-08 to 2023-12-15
+2024-09-30 14:30:26,473 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:26,474 - INFO - Fetching data for RNDRUSDT from 2023-12-15 to 2023-12-22
+2024-09-30 14:30:26,825 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:26,826 - INFO - Fetching data for RNDRUSDT from 2023-12-22 to 2023-12-29
+2024-09-30 14:30:27,132 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:27,132 - INFO - Fetching data for RNDRUSDT from 2023-12-29 to 2024-01-05
+2024-09-30 14:30:27,423 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:27,423 - INFO - Fetching data for RNDRUSDT from 2024-01-05 to 2024-01-12
+2024-09-30 14:30:27,718 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:27,718 - INFO - Fetching data for RNDRUSDT from 2024-01-12 to 2024-01-19
+2024-09-30 14:30:28,008 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:28,009 - INFO - Fetching data for RNDRUSDT from 2024-01-19 to 2024-01-26
+2024-09-30 14:30:28,311 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:28,311 - INFO - Fetching data for RNDRUSDT from 2024-01-26 to 2024-02-02
+2024-09-30 14:30:28,607 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:28,607 - INFO - Fetching data for RNDRUSDT from 2024-02-02 to 2024-02-09
+2024-09-30 14:30:28,897 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:28,897 - INFO - Fetching data for RNDRUSDT from 2024-02-09 to 2024-02-16
+2024-09-30 14:30:29,188 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:29,189 - INFO - Fetching data for RNDRUSDT from 2024-02-16 to 2024-02-23
+2024-09-30 14:30:29,479 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:29,480 - INFO - Fetching data for RNDRUSDT from 2024-02-23 to 2024-03-01
+2024-09-30 14:30:29,774 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:29,774 - INFO - Fetching data for RNDRUSDT from 2024-03-01 to 2024-03-08
+2024-09-30 14:30:30,069 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:30,069 - INFO - Fetching data for RNDRUSDT from 2024-03-08 to 2024-03-15
+2024-09-30 14:30:30,366 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:30,366 - INFO - Fetching data for RNDRUSDT from 2024-03-15 to 2024-03-22
+2024-09-30 14:30:30,664 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:30,664 - INFO - Fetching data for RNDRUSDT from 2024-03-22 to 2024-03-29
+2024-09-30 14:30:30,952 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:30,952 - INFO - Fetching data for RNDRUSDT from 2024-03-29 to 2024-04-05
+2024-09-30 14:30:31,263 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:31,263 - INFO - Fetching data for RNDRUSDT from 2024-04-05 to 2024-04-12
+2024-09-30 14:30:31,556 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:31,556 - INFO - Fetching data for RNDRUSDT from 2024-04-12 to 2024-04-19
+2024-09-30 14:30:31,855 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:31,855 - INFO - Fetching data for RNDRUSDT from 2024-04-19 to 2024-04-26
+2024-09-30 14:30:32,142 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:32,142 - INFO - Fetching data for RNDRUSDT from 2024-04-26 to 2024-05-03
+2024-09-30 14:30:32,433 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:32,433 - INFO - Fetching data for RNDRUSDT from 2024-05-03 to 2024-05-10
+2024-09-30 14:30:32,728 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:32,728 - INFO - Fetching data for RNDRUSDT from 2024-05-10 to 2024-05-17
+2024-09-30 14:30:33,019 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:33,019 - INFO - Fetching data for RNDRUSDT from 2024-05-17 to 2024-05-24
+2024-09-30 14:30:33,312 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:33,312 - INFO - Fetching data for RNDRUSDT from 2024-05-24 to 2024-05-31
+2024-09-30 14:30:33,618 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:33,618 - INFO - Fetching data for RNDRUSDT from 2024-05-31 to 2024-06-07
+2024-09-30 14:30:33,970 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:33,970 - INFO - Fetching data for RNDRUSDT from 2024-06-07 to 2024-06-14
+2024-09-30 14:30:34,324 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:34,324 - INFO - Fetching data for RNDRUSDT from 2024-06-14 to 2024-06-21
+2024-09-30 14:30:34,674 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:34,674 - INFO - Fetching data for RNDRUSDT from 2024-06-21 to 2024-06-28
+2024-09-30 14:30:35,026 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:35,026 - INFO - Fetching data for RNDRUSDT from 2024-06-28 to 2024-07-05
+2024-09-30 14:30:35,377 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:35,377 - INFO - Fetching data for RNDRUSDT from 2024-07-05 to 2024-07-12
+2024-09-30 14:30:35,730 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:35,730 - INFO - Fetching data for RNDRUSDT from 2024-07-12 to 2024-07-19
+2024-09-30 14:30:36,023 - INFO - Fetched 168 records for this interval.
+2024-09-30 14:30:36,023 - INFO - Fetching data for RNDRUSDT from 2024-07-19 to 2024-07-26
+2024-09-30 14:30:36,351 - INFO - Fetched 71 records for this interval.
+2024-09-30 14:30:36,351 - INFO - Fetching data for RNDRUSDT from 2024-07-26 to 2024-08-02
+2024-09-30 14:30:36,707 - WARNING - No data returned for RNDRUSDT from 2024-07-26 to 2024-08-02
+2024-09-30 14:30:36,707 - INFO - Fetching data for RNDRUSDT from 2024-08-02 to 2024-08-09
+2024-09-30 14:30:37,037 - WARNING - No data returned for RNDRUSDT from 2024-08-02 to 2024-08-09
+2024-09-30 14:30:37,037 - INFO - Fetching data for RNDRUSDT from 2024-08-09 to 2024-08-16
+2024-09-30 14:30:37,381 - WARNING - No data returned for RNDRUSDT from 2024-08-09 to 2024-08-16
+2024-09-30 14:30:37,381 - INFO - Fetching data for RNDRUSDT from 2024-08-16 to 2024-08-23
+2024-09-30 14:30:37,726 - WARNING - No data returned for RNDRUSDT from 2024-08-16 to 2024-08-23
+2024-09-30 14:30:37,726 - INFO - Fetching data for RNDRUSDT from 2024-08-23 to 2024-08-30
+2024-09-30 14:30:38,011 - WARNING - No data returned for RNDRUSDT from 2024-08-23 to 2024-08-30
+2024-09-30 14:30:38,011 - INFO - Fetching data for RNDRUSDT from 2024-08-30 to 2024-09-06
+2024-09-30 14:30:38,325 - WARNING - No data returned for RNDRUSDT from 2024-08-30 to 2024-09-06
+2024-09-30 14:30:38,325 - INFO - Fetching data for RNDRUSDT from 2024-09-06 to 2024-09-13
+2024-09-30 14:30:38,666 - WARNING - No data returned for RNDRUSDT from 2024-09-06 to 2024-09-13
+2024-09-30 14:30:38,666 - INFO - Fetching data for RNDRUSDT from 2024-09-13 to 2024-09-20
+2024-09-30 14:30:39,010 - WARNING - No data returned for RNDRUSDT from 2024-09-13 to 2024-09-20
+2024-09-30 14:30:39,010 - INFO - Fetching data for RNDRUSDT from 2024-09-20 to 2024-09-27
+2024-09-30 14:30:39,350 - WARNING - No data returned for RNDRUSDT from 2024-09-20 to 2024-09-27
+2024-09-30 14:30:39,351 - INFO - Fetching data for RNDRUSDT from 2024-09-27 to 2024-09-29
+2024-09-30 14:30:39,693 - WARNING - No data returned for RNDRUSDT from 2024-09-27 to 2024-09-29
+2024-09-30 14:30:39,751 - INFO - Data successfully saved to ../../data/raw/crypto_prices/render_token_weekly_brl.csv

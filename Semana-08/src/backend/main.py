@@ -5,7 +5,7 @@ from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
 import numpy as np
 import uvicorn
-from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime
+from sqlalchemy import create_engine, Column, Integer, String, Float,   Time
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 import datetime
@@ -81,7 +81,7 @@ def train_lstm_model():
     lstm_model.add(Dense(1))
     lstm_model.compile(optimizer='adam', loss='mean_squared_error')
     
-    lstm_model.fit(X_train, y_train, batch_size=32, epochs=50, verbose=1)
+    lstm_model.fit(X_train, y_train, batch_size=None, epochs=20, verbose=10)
     
     # Save the trained LSTM model
     lstm_model.save('lstm_model.h5')
@@ -100,7 +100,7 @@ def train_gru_model():
     gru_model.add(Dense(1))
     gru_model.compile(optimizer='adam', loss='mean_squared_error')
     
-    gru_model.fit(X_train, y_train, batch_size=32, epochs=50, verbose=1)
+    gru_model.fit(X_train, y_train, batch_size=None, epochs=50, verbose=1)
     
     # Save the trained GRU model
     gru_model.save('gru_model.h5')
@@ -121,43 +121,15 @@ def predict_future_prices(model, last_sequence, future_days):
 
 # Endpoint for prediction
 @app.get("/predict")
-def predict_price(days: int, model_type: str, db: Session = Depends(get_db)):
-    try:
-        # Load the respective model
-        if model_type == "LSTM":
-            if not os.path.exists('lstm_model.h5'):
-                raise HTTPException(status_code=400, detail="LSTM model not trained.")
-            model = load_model('lstm_model.h5')
-        elif model_type == "GRU":
-            if not os.path.exists('gru_model.h5'):
-                raise HTTPException(status_code=400, detail="GRU model not trained.")
-            model = load_model('gru_model.h5')
-        else:
-            raise HTTPException(status_code=400, detail="Invalid model type.")
+def predict_price(model, X_test, scaler):
+    # Fazer previsões com o modelo treinado
+    predictions = model.predict(X_test)
+    
+    # Reverter a normalização dos preços previstos
+    predictions = scaler.inverse_transform(predictions)
+    
+    return predictions
 
-        # Prepare the last sequence of data for prediction
-        scaled_data = scaler.fit_transform(rndr_df['price'].values.reshape(-1, 1))
-        last_sequence = scaled_data[-60:]
-
-        # Predict future prices
-        forecast = predict_future_prices(model, last_sequence, days)
-
-        # Save predictions to the database
-        for i, predicted_price in enumerate(forecast):
-            prediction = TokenPrediction(
-                token_name="RNDR",
-                predicted_price=float(predicted_price),
-                prediction_time=datetime.datetime.utcnow() + datetime.timedelta(days=i),
-                model_version=model_type
-            )
-            db.add(prediction)
-
-        db.commit()
-        return {"forecast": forecast.tolist()}
-
-    except Exception as e:
-        logging.error(f"Error during prediction: {e}")
-        raise HTTPException(status_code=500, detail=f"Internal Server Error: {e}")
 
 # Train model endpoint
 @app.post("/train")

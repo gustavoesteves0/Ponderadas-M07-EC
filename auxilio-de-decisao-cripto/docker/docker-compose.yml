@@ -11,6 +11,7 @@ services:
     volumes:
       - ../src:/app/src
       - ../data:/app/data
+      - ../src/scripts:/app/src/scripts
     environment:
       - PYTHONPATH=/app/src
       - DATABASE_URL=postgresql://postgres:postgres23@postgres:5432/crypto_model_db
@@ -43,19 +44,7 @@ services:
     volumes:
       - ../src:/app/src
       - ../data:/app/data
-    depends_on:
-      - scripts
-
-
-  jupyter:
-    image: jupyter/base-notebook:python-3.9
-    container_name: jupyter_notebook
-    ports:
-      - "8888:8888"
-    volumes:
-      - ../notebooks:/home/jovyan/notebooks
-    environment:
-      - JUPYTER_ENABLE_LAB=yes
+      - ../src/scripts:/app/src/scripts
 
   models:
     build:
@@ -65,24 +54,7 @@ services:
     volumes:
       - ../src:/app/src
       - ../data:/app/data
-
-  scripts:
-    build:
-      context: ../
-      dockerfile: docker/scripts/Dockerfile
-    container_name: scripts_container
-    volumes:
-      - ../src:/app/src
-      - ../data:/app/data
-
-  utils:
-    build:
-      context: ../
-      dockerfile: docker/utils/Dockerfile
-    container_name: utils_container
-    volumes:
-      - ../src:/app/src
-      - ../data:/app/data
+      - ../src/scripts:/app/src/scripts
 
 volumes:
   postgres_data:
