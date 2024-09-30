@@ -1,0 +1,88 @@
+services:
+  api:
+    build:
+      context: ../
+      dockerfile: docker/api/Dockerfile
+    container_name: crypto_api
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+    volumes:
+      - ../src:/app/src
+      - ../data:/app/data
+    environment:
+      - PYTHONPATH=/app/src
+      - DATABASE_URL=postgresql://postgres:postgres23@postgres:5432/crypto_model_db
+
+  postgres:
+    image: postgres:14
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres23
+      POSTGRES_DB: crypto_model_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    
+  dashboard:
+    build:
+      context: ../
+      dockerfile: docker/dashboard/Dockerfile
+    container_name: crypto_dashboard
+    ports:
+      - "8501:8501"
+    volumes:
+      - ../src:/app/src
+      - ../data:/app/data
+    depends_on:
+      - scripts
+
+
+  jupyter:
+    image: jupyter/base-notebook:python-3.9
+    container_name: jupyter_notebook
+    ports:
+      - "8888:8888"
+    volumes:
+      - ../notebooks:/home/jovyan/notebooks
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+
+  models:
+    build:
+      context: ../
+      dockerfile: docker/models/Dockerfile
+    container_name: models_container
+    volumes:
+      - ../src:/app/src
+      - ../data:/app/data
+
+  scripts:
+    build:
+      context: ../
+      dockerfile: docker/scripts/Dockerfile
+    container_name: scripts_container
+    volumes:
+      - ../src:/app/src
+      - ../data:/app/data
+
+  utils:
+    build:
+      context: ../
+      dockerfile: docker/utils/Dockerfile
+    container_name: utils_container
+    volumes:
+      - ../src:/app/src
+      - ../data:/app/data
+
+volumes:
+  postgres_data:

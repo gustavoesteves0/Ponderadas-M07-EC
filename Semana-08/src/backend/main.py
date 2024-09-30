@@ -1,8 +1,6 @@
-# FastAPI backend
-
 from fastapi import FastAPI, Depends, HTTPException
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, GRU, Dense
+from tensorflow.keras.models import Sequential, load_model
+from tensorflow.keras.layers import LSTM, GRU, Dense, Dropout
 from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
 import numpy as np
@@ -12,6 +10,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 import datetime
 from pydantic import BaseModel
+import logging
+import os
 
 # Configurações do banco de dados PostgreSQL
 DATABASE_URL = "postgresql://gustavomachado:newpassword@postgres:5432/rndr_token_predict"
@@ -30,10 +30,17 @@ class TokenPrediction(Base):
     prediction_time = Column(DateTime, default=datetime.datetime.utcnow)
     model_version = Column(String, default="LSTM")
 
-# Cria as tabelas no banco de dados (se elas ainda não existirem)
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+# Função para obter uma sessão do banco de dados
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 # Carrega os dados do arquivo CSV
 rndr_df = pd.read_csv('RNDR_historical_data.csv')
@@ -42,138 +49,130 @@ rndr_df.set_index('date', inplace=True)
 rndr_df = rndr_df.asfreq('D')
 
 # Variável global para armazenar os modelos treinados
-lstm_model = None
-gru_model = None
 scaler = MinMaxScaler(feature_range=(0, 1))
 
-# Função para preparar os dados (escalamento e criação de sequências)
-def prepare_data_for_model(df, n_steps=60):
-    scaled_data = scaler.fit_transform(df[['price']])
-    
+# Função para preparar os dados 
+def reshape_input_data(data, timesteps):
     X, y = [], []
-    for i in range(n_steps, len(scaled_data)):
-        X.append(scaled_data[i-n_steps:i, 0])
-        y.append(scaled_data[i, 0])
+    for i in range(len(data) - timesteps):
+        X.append(data[i:i + timesteps])  # Appending timesteps of data as a sequence
+        y.append(data[i + timesteps])    # Appending the next value as the target
     
-    X = np.array(X)
+    X = np.array(X).reshape(-1, timesteps, 1)  # Adding 1 for the feature dimension
     y = np.array(y)
     
-    # Reshape X to be [samples, time steps, features] as exigido pelos modelos LSTM/GRU
-    X = np.reshape(X, (X.shape[0], X.shape[1], 1))
     return X, y
 
-# Função para treinar o modelo LSTM
-def train_lstm_model(df):
-    global lstm_model
-    X, y = prepare_data_for_model(df)
+def prepare_data_for_model(df, timesteps=60):
+    scaled_data = scaler.fit_transform(df['price'].values.reshape(-1, 1))
+    X, y = reshape_input_data(scaled_data, timesteps)
+    return X, y
 
+# Train the LSTM model and save it
+def train_lstm_model():
+    X_train, y_train = prepare_data_for_model(rndr_df)
+    
     lstm_model = Sequential()
-    lstm_model.add(LSTM(units=50, return_sequences=True, input_shape=(X.shape[1], 1)))
-    lstm_model.add(LSTM(units=50))
+    lstm_model.add(LSTM(100, return_sequences=True, input_shape=(X_train.shape[1], 1)))
+    lstm_model.add(Dropout(0.2))
+    lstm_model.add(LSTM(100, return_sequences=False))
+    lstm_model.add(Dropout(0.2))
+    lstm_model.add(Dense(50))
     lstm_model.add(Dense(1))
-
     lstm_model.compile(optimizer='adam', loss='mean_squared_error')
-    lstm_model.fit(X, y, epochs=5, batch_size=32)
+    
+    lstm_model.fit(X_train, y_train, batch_size=32, epochs=50, verbose=1)
+    
+    # Save the trained LSTM model
+    lstm_model.save('lstm_model.h5')
+    return lstm_model
 
-# Função para treinar o modelo GRU
-def train_gru_model(df):
-    global gru_model
-    X, y = prepare_data_for_model(df)
-
+# Train the GRU model and save it
+def train_gru_model():
+    X_train, y_train = prepare_data_for_model(rndr_df)
+    
     gru_model = Sequential()
-    gru_model.add(GRU(units=50, return_sequences=True, input_shape=(X.shape[1], 1)))
-    gru_model.add(GRU(units=50))
+    gru_model.add(GRU(100, return_sequences=True, input_shape=(X_train.shape[1], 1)))
+    gru_model.add(Dropout(0.2))
+    gru_model.add(GRU(100))
+    gru_model.add(Dropout(0.2))
+    gru_model.add(Dense(50))
     gru_model.add(Dense(1))
-
     gru_model.compile(optimizer='adam', loss='mean_squared_error')
-    gru_model.fit(X, y, epochs=5, batch_size=32)
-
-# Função para prever com LSTM ou GRU
-def predict_lstm_gru(model, days):
-    last_60_days = rndr_df['price'][-60:].values
-    scaled_data = scaler.transform(last_60_days.reshape(-1, 1))
     
-    X_input = np.array(scaled_data).reshape(1, 60, 1)
+    gru_model.fit(X_train, y_train, batch_size=32, epochs=50, verbose=1)
+    
+    # Save the trained GRU model
+    gru_model.save('gru_model.h5')
+    return gru_model
+
+# Predict future prices
+def predict_future_prices(model, last_sequence, future_days):
     predictions = []
+    current_sequence = last_sequence
+
+    for _ in range(future_days):
+        next_price = model.predict(current_sequence.reshape(1, current_sequence.shape[0], 1))
+        predictions.append(next_price[0][0])
+
+        current_sequence = np.append(current_sequence[1:], next_price)
     
-    for _ in range(days):
-        pred_price = model.predict(X_input)[0][0]
-        predictions.append(pred_price)
-        
-        # Atualiza o input com a nova previsão
-        X_input = np.append(X_input[:, 1:, :], [[pred_price]], axis=1)
-    
-    # Retorna os valores escalados para o intervalo original
-    predictions = scaler.inverse_transform(np.array(predictions).reshape(-1, 1))
-    return predictions.flatten()
+    return scaler.inverse_transform(np.array(predictions).reshape(-1, 1))
 
-# Modelo de dados para as previsões via POST
-class PredictionCreate(BaseModel):
-    token_name: str
-    predicted_price: float
-    prediction_time: datetime.datetime
-    model_version: str
-
-# Dependência para obter uma sessão do banco de dados
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-# Endpoint para fazer previsões e salvar no banco de dados
+# Endpoint for prediction
 @app.get("/predict")
 def predict_price(days: int, model_type: str, db: Session = Depends(get_db)):
-    if model_type == "LSTM":
-        forecast = predict_lstm_gru(lstm_model, days)
-        model_version = "LSTM"
-    elif model_type == "GRU":
-        forecast = predict_lstm_gru(gru_model, days)
-        model_version = "GRU"
-    else:
-        raise HTTPException(status_code=400, detail="Invalid model type.")
+    try:
+        # Load the respective model
+        if model_type == "LSTM":
+            if not os.path.exists('lstm_model.h5'):
+                raise HTTPException(status_code=400, detail="LSTM model not trained.")
+            model = load_model('lstm_model.h5')
+        elif model_type == "GRU":
+            if not os.path.exists('gru_model.h5'):
+                raise HTTPException(status_code=400, detail="GRU model not trained.")
+            model = load_model('gru_model.h5')
+        else:
+            raise HTTPException(status_code=400, detail="Invalid model type.")
 
-    # Salva as previsões no banco de dados
-    for i in range(days):
-        predicted_price = float(forecast[i])  # Converte para float padrão
-        prediction = TokenPrediction(
-            token_name="RNDR",
-            predicted_price=predicted_price,
-            prediction_time=datetime.datetime.utcnow() + datetime.timedelta(days=i),
-            model_version=model_version
-        )
-        db.add(prediction)
-    
-    db.commit()
+        # Prepare the last sequence of data for prediction
+        scaled_data = scaler.fit_transform(rndr_df['price'].values.reshape(-1, 1))
+        last_sequence = scaled_data[-60:]
 
-    return {"forecast": forecast.tolist()}
+        # Predict future prices
+        forecast = predict_future_prices(model, last_sequence, days)
 
-# Rota POST para treinar o modelo
+        # Save predictions to the database
+        for i, predicted_price in enumerate(forecast):
+            prediction = TokenPrediction(
+                token_name="RNDR",
+                predicted_price=float(predicted_price),
+                prediction_time=datetime.datetime.utcnow() + datetime.timedelta(days=i),
+                model_version=model_type
+            )
+            db.add(prediction)
+
+        db.commit()
+        return {"forecast": forecast.tolist()}
+
+    except Exception as e:
+        logging.error(f"Error during prediction: {e}")
+        raise HTTPException(status_code=500, detail=f"Internal Server Error: {e}")
+
+# Train model endpoint
 @app.post("/train")
 def train_model(model_type: str):
-    if model_type == "LSTM":
-        train_lstm_model(rndr_df)
-    elif model_type == "GRU":
-        train_gru_model(rndr_df)
-    else:
-        raise HTTPException(status_code=400, detail="Invalid model type.")
-    
-    return {"message": f"Modelo {model_type} treinado com sucesso."}
-
-# Rota GET para listar todas as previsões no banco de dados
-@app.get("/predictions/")
-def get_predictions(db: Session = Depends(get_db)):
-    predictions = db.query(TokenPrediction).all()
-    return predictions
-
-# Rota GET para obter uma previsão específica pelo ID
-@app.get("/predictions/{prediction_id}")
-def get_prediction(prediction_id: int, db: Session = Depends(get_db)):
-    prediction = db.query(TokenPrediction).filter(TokenPrediction.id == prediction_id).first()
-    if not prediction:
-        raise HTTPException(status_code=404, detail="Previsão não encontrada")
-    return prediction
+    try:
+        if model_type == "LSTM":
+            train_lstm_model()
+        elif model_type == "GRU":
+            train_gru_model()
+        else:
+            raise HTTPException(status_code=400, detail="Invalid model type.")
+        return {"message": f"Modelo {model_type} treinado com sucesso."}
+    except Exception as e:
+        logging.error(f"Error training {model_type} model: {e}")
+        raise HTTPException(status_code=500, detail=f"Internal Server Error: {e}")
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
