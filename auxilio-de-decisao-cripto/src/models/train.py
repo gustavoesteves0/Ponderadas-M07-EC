@@ -21,6 +21,6 @@ def train_model(X_train, y_train, time_steps=10, features=1):
     model.compile(optimizer='adam', loss='mean_squared_error')
 
     # Train model
-    model.fit(X_train, y_train, epochs=100, batch_size=32, verbose=1)
+    model.fit(X_train, y_train, =100, batch_size=32, verbose=1)
 
     return model

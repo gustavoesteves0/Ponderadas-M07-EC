@@ -2,7 +2,7 @@ import streamlit as st
 from models.evaluate import evaluate_model
 
 def display_metrics(model, X_test, y_test):
-    # Call the evaluate_model function to get the evaluation metrics
+    # Get evaluation metrics
     metrics = evaluate_model(model, X_test, y_test)
     
     # Display the metrics using Streamlit
@@ -10,6 +10,10 @@ def display_metrics(model, X_test, y_test):
     st.write(f"- **MAE**: {metrics['MAE']:.2f}")
     st.write(f"- **RMSE**: {metrics['RMSE']:.2f}")
 
-def display_predictions(prediction: float):
-    # Display the prediction result
-    st.write(f"Preço previsto: ${prediction.flatten()[0]:.2f}")
+def display_predictions(predictions):
+    # If predictions contain multiple values, show a line chart
+    if len(predictions) > 1:
+        st.line_chart(predictions)
+    else:
+        # Display the prediction result if it's a single value
+        st.write(f"Preço previsto: ${predictions[0]:.2f}")

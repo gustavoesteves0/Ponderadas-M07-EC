@@ -1,44 +1,53 @@
-from models.preprocess import prepare_data
-from models.train import train_model
+import numpy as np
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import LSTM, Dense, Dropout, Input
+from tensorflow.keras.models import load_model
 from models.evaluate import evaluate_model
-from models.storage import save_model, load_model
-from models.preprocess import prepare_data
-from models.train import train_model
-import joblib
 
 class ModelManager:
     def __init__(self, model_name="crypto_model.pkl"):
         self.model = None
         self.model_path = f"src/models/{model_name}"
 
-
-    def train(self, start_date: str, end_date: str):
-            save_model(self.model, self.model_path)
-            # Aqui você coleta e processa os dados para treinamento
-            data = "../../data/processed/crypto_prices/render_token_weekly_brl.csv"
-            start_date="2023-09-29"
-            end_date="2024-10-06"
-            # Preprocess the data
-            X_train, y_train = prepare_data(data)
-
-            # Train the model
-            self.model = train_model(X_train, y_train)
-
-            # Save the trained model
-            # Treinamento do modelo (exemplo usando scikit-learn)
-            self.model = self.train_model(data)
-            # Salva o modelo treinado
-            joblib.dump(self.model, self.model_path)
-
-
-    def predict(self, features):
-        # Carrega o modelo se não estiver em memória
-        if self.model is None:
-            self.model = load_model(self.model_path)
+    def train_model(X_train, y_train, time_steps=1):
+        # Convert X_train and y_train to numpy arrays if they're not
+        X_train = np.array(X_train)
+        y_train = np.array(y_train)
         
-        # Faz a previsão com os recursos fornecidos
-        return self.model.predict(features)
+        # Debugging: print the shape of X_train before reshaping
+        print(f"Original X_train shape: {X_train.shape}")
+        
+        # If X_train has 2 dimensions, add a time step dimension
+        if len(X_train.shape) == 2:
+            # Reshape X_train to (samples, time steps, features)
+            X_train = X_train.reshape((X_train.shape[0], time_steps, X_train.shape[1]))
 
+        # Debugging: print the shape of X_train after reshaping
+        print(f"Reshaped X_train shape: {X_train.shape}")
+        
+        # Build LSTM model with Input layer
+        model = Sequential()
+        model.add(Input(shape=(X_train.shape[1], X_train.shape[2])))
+        model.add(LSTM(50, activation='relu'))
+        model.add(Dropout(0.2))
+        model.add(Dense(1))  # Single output for regression
+
+        # Compile model
+        model.compile(optimizer='adam', loss='mean_squared_error')
+
+        # Train model
+        model.fit(X_train, y_train, epochs=20, batch_size=32, verbose=1)
+
+        return model  # Return the trained model
+    
+    def predict_price(self, features):
+        # Load the model if not in memory
+        if self.model is None:
+            self.load_model()
+        
+        # Make prediction
+        return self.model.predict(features)
+    
     def evaluate(self, X_test, y_test):
         # Avalia o modelo
         return evaluate_model(self.model, X_test, y_test)

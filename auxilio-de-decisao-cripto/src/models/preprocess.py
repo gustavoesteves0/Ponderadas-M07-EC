@@ -1,14 +1,9 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-def prepare_data(data):
-    # Convert 'open_time' to datetime if not already
+def prepare_data(data, test_size=0.2, random_state=42):
     data['open_time'] = pd.to_datetime(data['open_time'])
-
-    # Filter only numerical columns (e.g., 'price_brl' as the target variable)
     features = data.select_dtypes(include=['float64', 'int64']).drop(columns=['price_brl'])
-
-    # Target variable
     target = data['price_brl']
-
-    return features, target
+    X_train, X_test, y_train, y_test = train_test_split(features, target, test_size=test_size, random_state=random_state)
+    return X_train, X_test, y_train, y_test

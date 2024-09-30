@@ -5,40 +5,42 @@ from .services import get_db, log_usage
 
 app = FastAPI()
 
-# Instancia o gerenciador do modelo
+# Instantiate the model manager
 model_manager = ModelManager()
 
-# Endpoint para treinar o modelo
+# Endpoint to train the model
 @app.post("/train")
 def train_model(request: TrainRequest):
-    # Extrai parâmetros do corpo da requisição
-    crypto = request.crypto
     start_date = request.start_date
     end_date = request.end_date
     
-    # Treina o modelo com os parâmetros fornecidos
+    # Train the model with the provided parameters
     try:
-        model_manager.train(crypto, start_date, end_date)
-        return {"message": f"Modelo treinado para {crypto} de {start_date} até {end_date}."}
+        model_manager.train(start_date, end_date)
+        # Ideally save the trained model to a file
+        model_manager.save(f"../models/render_token_weekly_brl.pkl")
+        return {"message": f"Modelo treinado para Render de {start_date} até {end_date}."}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Erro ao treinar o modelo: {e}")
 
-# Endpoint para realizar previsões
+# Endpoint to make predictions
 @app.post("/predict", response_model=PredictResponse)
 def predict(request: PredictRequest):
-    # Extrai parâmetros do corpo da requisição
     crypto = request.crypto
 
     try:
-        # Faz a previsão
+        # Load the trained model before prediction
+        model_manager.load(f"../models/{crypto}_model.pkl")
         prediction = model_manager.predict(crypto)
-        # Loga a utilização da API
+        # Log the API usage
         log_usage(crypto)
         return {"crypto": crypto, "prediction": prediction}
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Modelo não encontrado. Treine o modelo antes de realizar previsões.")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Erro ao realizar previsão: {e}")
 
-# Healthcheck básico
+# Basic healthcheck
 @app.get("/healthcheck")
 def healthcheck():
     return {"status": "API is running."}
