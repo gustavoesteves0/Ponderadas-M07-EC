@@ -77,7 +77,7 @@ auxilio-de-decisao-cripto/
    ```
 3. **Inicie a docker**
 ```bash
-   cd docker
+   cd auxilio-de-decisao-cripto/docker
    docker-compose up --build
    ```
 4. Acesse o dashboard no navegador usando o link fornecido na saída do terminal.

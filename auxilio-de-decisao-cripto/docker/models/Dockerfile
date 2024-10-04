@@ -14,11 +14,8 @@ COPY ../../src/models/requirements.txt .
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application code into the container
-COPY . /app/
+COPY . /app/src/models
 
-# Expose any ports that need to be accessible (adjust as necessary)
-# EXPOSE 8000
 
 # Define the entry point or command to run your models
 # This can be adjusted based on how you want to use your models (e.g., for training, API server, etc.)
