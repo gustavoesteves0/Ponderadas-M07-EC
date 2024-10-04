@@ -17,6 +17,7 @@
 ## Sobre o Projeto
 
 Este projeto é um **Sistema de Auxílio para Investimento em Cripto Ativos** que permite aos usuários visualizar dados históricos de preços de criptomoedas, treinar modelos de Machine Learning para prever preços futuros e avaliar a performance desses modelos. A aplicação é construída utilizando `Streamlit`, e o modelo preditivo é baseado em uma rede neural LSTM. É interessante observar que o modelo é treinado com dados históricos de preços de criptomoedas, e as previsões são feitas com base nesses dados. Tais dados não representam a realidade e não devem ser utilizados para fins de investimento. Porém, para a finalidade do projeto, eles são suficientes para demonstrar o funcionamento do sistema. Para continuidade do projeto, entraria no roadmap a criação de novas features para o modelo, como a inclusão de novas variáveis, a otimização de hiperparâmetros e a implementação de uma estratégia de investimento baseada nas previsões. Um exemplo de criação de novas features levaria em conta a inclusão de dados de expectativa, visto que o mercado de criptoativos é altamente influenciado por notícias e eventos. Para essa inclusão, pode ser utilizado um modelo de LLDA (Latent Dirichlet Allocation) para classificar notícias e eventos em categorias, e então incluir essas categorias como features no modelo preditivo. Por motivos de tempo, não foi possível implementar essa feature no projeto atual, mas fica estabelecida uma possibilidade de melhoria para o futuro.
+Além diss, vale ressaltar que apesar de válida para fins de projeto, a implementação de um datalake se faz desnecessária visto que o volume de dados é baixo e pode ser facilmente manipulado em um ambiente local. Para um volume maior de dados, a implementação de um datalake seria necessária para garantir a escalabilidade do sistema.
 
 ## Estrutura do Projeto
 
@@ -71,18 +72,15 @@ auxilio-de-decisao-cripto/
 
 1. **Clone o Repositório**
    ```bash
-   git clone https://github.com/seu-usuario/seu-repositorio.git
-   cd seu-repositorio
-
-2. **Instale as Dependências**
+   git clone https://github.com/gustavoesteves0/Ponderadas-M07-EC
+   cd Ponderadas-M07-EC
+   ```
+3. **Inicie a docker**
 ```bash
-poetry install
-```
-3. Inicie o Dashboard
-```bash
-streamlit run src/dashboard/app.py
-```
-4. Acesse o dashboard no navegador usando o link fornecido pelo Streamlit.
+   cd docker
+   docker-compose up --build
+   ```
+4. Acesse o dashboard no navegador usando o link fornecido na saída do terminal.
 
 ## Como Usar o Dashboard
 
